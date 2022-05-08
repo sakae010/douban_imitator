@@ -2,8 +2,10 @@ import 'package:douban_imitator/constant/constant.dart';
 import 'package:douban_imitator/http/API.dart';
 import 'package:douban_imitator/http/mock_request.dart';
 import 'package:douban_imitator/model/subject.dart';
+import 'package:douban_imitator/widgets/image/radius_img.dart';
 import 'package:douban_imitator/widgets/search_text_field_widget.dart';
 import 'package:douban_imitator/pages/home/home_app_bar.dart' as my_app_bar;
+import 'package:douban_imitator/widgets/video_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -110,15 +112,15 @@ class _SliverContainerState extends State<SliverContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return getContentSliver(context, list);
   }
 
-  Widget getContentSliver(BuildContext context, List<Subject> list) {
+  Widget getContentSliver(BuildContext context, List<Subject>? list) {
     if (widget.name == _tabs[0]) {
       return _loginContainer(context);
     }
 
-    if (list.isEmpty) {
+    if (list == null || list.isEmpty) {
       return const Text('暂无数据');
     }
 
@@ -147,8 +149,85 @@ class _SliverContainerState extends State<SliverContainer> {
     );
   }
 
+  double singleLineImgHeight = 180.0;
+  double contentVideoHeight = 350.0;
+
   ///列表的普通单个item
-  getCommonItem(List<Subject> items, int index) {}
+  getCommonItem(List<Subject> items, int index) {
+    Subject item = items[index];
+    bool showVideo = index == 1 || index == 3;
+    return Container(
+      height: showVideo ? contentVideoHeight : singleLineImgHeight,
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 25.0,
+                backgroundImage: NetworkImage(item.casts?[0].avatars?.medium),
+                backgroundColor: Colors.white,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Text(item.title),
+              ),
+              const Expanded(
+                child: Align(
+                  child: Icon(
+                    Icons.more_horiz,
+                    color: Colors.grey,
+                    size: 18.0,
+                  ),
+                  alignment: Alignment.centerRight,
+                ),
+              )
+            ],
+          ),
+          Expanded(
+            child: Container(
+              child:
+                  showVideo ? getContentVideo(index) : getItemCenterImg(item),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget getItemCenterImg(Subject item) {
+    return Row(
+      children: [
+        Expanded(
+          child: RadiusImg.get(item.images?.large,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(5.0),
+                      bottomLeft: Radius.circular(5.0)))),
+        ),
+        Expanded(
+            child: RadiusImg.get(item.casts?[1].avatars?.medium, radius: 0.0)),
+        Expanded(
+            child: RadiusImg.get(item.casts?[2].avatars?.medium,
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(5.0),
+                        bottomRight: Radius.circular(5.0)))))
+      ],
+    );
+  }
+
+  Widget getContentVideo(int index) {
+    ///  mounted 表明 State 当前是否正确绑定在View树中
+    if (!mounted) {
+      return Container();
+    }
+    return VideoWidget(
+      index == 1 ? Constant.URL_MP4_DEMO_0 : Constant.URL_MP4_DEMO_1,
+      showProgressBar: false,
+    );
+  }
 }
 
 /// 动态TAB

@@ -4,6 +4,7 @@ import 'package:douban_imitator/pages/home/home_page.dart';
 import 'package:douban_imitator/pages/movie/book_audio_video_page.dart';
 import 'package:douban_imitator/pages/person/person_center_page.dart';
 import 'package:douban_imitator/pages/shop_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 ///这个页面是作为整个APP的最外层的容器，以Tab为基础控制每个item的显示与隐藏
@@ -48,7 +49,9 @@ class _ContainerPageState extends State<ContainerPage> {
 
   @override
   void initState() {
-    print('initState _ContainerPageState');
+    if (kDebugMode) {
+      print('initState _ContainerPageState');
+    }
     pages ??= [
       const HomePage(),
       const BookAudioVideoPage(),
