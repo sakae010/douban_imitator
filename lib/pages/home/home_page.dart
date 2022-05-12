@@ -2,6 +2,7 @@ import 'package:douban_imitator/constant/constant.dart';
 import 'package:douban_imitator/http/API.dart';
 import 'package:douban_imitator/http/mock_request.dart';
 import 'package:douban_imitator/model/subject.dart';
+import 'package:douban_imitator/router.dart';
 import 'package:douban_imitator/widgets/image/radius_img.dart';
 import 'package:douban_imitator/widgets/search_text_field_widget.dart';
 import 'package:douban_imitator/pages/home/home_app_bar.dart' as my_app_bar;
@@ -45,7 +46,9 @@ DefaultTabController getWidget() {
                     child: SearchTextFieldWidget(
                       hintText: "影视作品中你难忘的离别",
                       margin: const EdgeInsets.only(left: 15.0, right: 15.0),
-                      onTap: () {},
+                      onTap: () {
+                        MyRouter.push(context, MyRouter.searchPage, '影视作品中你难忘的离别');
+                      },
                     ),
                     alignment: const Alignment(0.0, 0.0),
                   ),
@@ -149,7 +152,7 @@ class _SliverContainerState extends State<SliverContainer> {
     );
   }
 
-  double singleLineImgHeight = 180.0;
+  double singleLineImgHeight = 200.0;
   double contentVideoHeight = 350.0;
 
   ///列表的普通单个item
@@ -159,6 +162,13 @@ class _SliverContainerState extends State<SliverContainer> {
     return Container(
       height: showVideo ? contentVideoHeight : singleLineImgHeight,
       color: Colors.white,
+      margin: const EdgeInsets.only(bottom: 10.0),
+      padding: const EdgeInsets.only(
+        left: Constant.marginLeft,
+        right: Constant.marginRight,
+        top: Constant.marginRight,
+        bottom: 10.0
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -187,8 +197,33 @@ class _SliverContainerState extends State<SliverContainer> {
           ),
           Expanded(
             child: Container(
+              padding: const EdgeInsets.only(top: 5.0),
               child:
                   showVideo ? getContentVideo(index) : getItemCenterImg(item),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Image.asset(
+                  Constant.imagePrefix + 'ic_vote.png',
+                  width: 25.0,
+                  height: 25.0,
+                ),
+                Image.asset(
+                  Constant.imagePrefix +
+                      'ic_notification_tv_calendar_comments.png',
+                  width: 20.0,
+                  height: 20.0,
+                ),
+                Image.asset(
+                  Constant.imagePrefix + 'ic_status_detail_reshare_icon.png',
+                  width: 25.0,
+                  height: 25.0,
+                )
+              ],
             ),
           )
         ],
@@ -198,6 +233,7 @@ class _SliverContainerState extends State<SliverContainer> {
 
   Widget getItemCenterImg(Subject item) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Expanded(
           child: RadiusImg.get(item.images?.large,
@@ -224,7 +260,7 @@ class _SliverContainerState extends State<SliverContainer> {
       return Container();
     }
     return VideoWidget(
-      index == 1 ? Constant.URL_MP4_DEMO_0 : Constant.URL_MP4_DEMO_1,
+      index == 1 ? Constant.urlMp4Demo0 : Constant.urlMp4Demo1,
       showProgressBar: false,
     );
   }
@@ -233,7 +269,7 @@ class _SliverContainerState extends State<SliverContainer> {
 /// 动态TAB
 _loginContainer(BuildContext context) {
   return Align(
-    alignment: const Alignment(0.0, 0.0),
+    alignment: Alignment.center,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -260,7 +296,9 @@ _loginContainer(BuildContext context) {
                 border: Border.all(color: Colors.green),
                 borderRadius: const BorderRadius.all(Radius.circular(6.0))),
           ),
-          onTap: () {},
+          onTap: () {
+            MyRouter.push(context, MyRouter.searchPage, '搜索笨啦灯');
+          },
         )
       ],
     ),

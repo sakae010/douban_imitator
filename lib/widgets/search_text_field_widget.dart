@@ -19,7 +19,7 @@ class SearchTextFieldWidget extends StatelessWidget {
       margin: margin ?? const EdgeInsets.all(0.0),
       width: MediaQuery.of(context).size.width,
       alignment: AlignmentDirectional.center,
-      height: 37.0,
+      height: 40.0,
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 237, 236, 237),
         borderRadius: BorderRadius.circular(24.0)
@@ -29,7 +29,7 @@ class SearchTextFieldWidget extends StatelessWidget {
         onTap: onTap,
         cursorColor: const Color.fromARGB(255, 0, 189, 96),
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(top: 1.0),
+          contentPadding: const EdgeInsets.only(top: 3.0),
           border: InputBorder.none,
           hintText: hintText,
           hintStyle: const TextStyle(

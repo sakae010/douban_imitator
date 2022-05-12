@@ -4,6 +4,7 @@
 
 import 'dart:math' as math;
 
+import 'package:douban_imitator/pages/home/my_home_tab.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -1098,7 +1099,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     required this.toolbarTextStyle,
     required this.titleTextStyle,
     required this.systemOverlayStyle,
-    this.bottomList,
+    required this.bottomList,
   }) : assert(primary || topPadding == 0.0),
         assert(
         !floating || (snapConfiguration == null && showOnScreenConfiguration == null) || vsync != null,
@@ -1106,13 +1107,13 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
         ),
         _bottomHeight = bottom?.preferredSize.height ?? 0.0;
 
-  final List<String>? bottomList;
+  final List<String> bottomList;
   final Widget? leading;
   final bool automaticallyImplyLeading;
   final Widget? title;
   final List<Widget>? actions;
   final Widget? flexibleSpace;
-  final PreferredSizeWidget? bottom;
+  PreferredSizeWidget? bottom;
   final double? elevation;
   final Color? shadowColor;
   final bool forceElevated;
@@ -1169,6 +1170,37 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     final double toolbarOpacity = !pinned || isPinnedWithOpacityFade
         ? (visibleToolbarHeight / (toolbarHeight ?? kToolbarHeight)).clamp(0.0, 1.0)
         : 1.0;
+
+    final double deltaExtent = maxExtent - minExtent;
+
+    // 0.0 -> Expanded
+    // 1.0 -> Collapsed to toolbar
+
+    final double t = (1.0 -
+        (math.max(minExtent, maxExtent - shrinkOffset) - minExtent) /
+            deltaExtent)
+        .clamp(0.0, 1.0);
+
+    Color? color = Color.lerp(Colors.white, Colors.green, t);
+
+    bottom = HomeTabBar(
+      translate: t,
+      tabBar: TabBar(
+        indicatorSize: TabBarIndicatorSize.label,
+        indicatorWeight: 2.0,
+        indicatorColor: color,
+        // These are the widgets to put in each tab in the tab bar.
+        tabs: bottomList
+            .map((String name) => Container(
+          child: Text(
+            name,
+            style: TextStyle(color: color, fontSize: 17.0),
+          ),
+          padding: const EdgeInsets.only(bottom: 5.0, top: 5.0),
+        ))
+            .toList(),
+      ),
+    );
 
     final Widget appBar = FlexibleSpaceBar.createSettings(
       minExtent: minExtent,
@@ -1356,7 +1388,7 @@ class SliverAppBar extends StatefulWidget {
     this.actions,
     this.flexibleSpace,
     this.bottom,
-    this.bottomTextString,
+    required this.bottomTextString,
     this.elevation,
     this.shadowColor,
     this.forceElevated = false,
@@ -1414,6 +1446,7 @@ class SliverAppBar extends StatefulWidget {
   ///
   /// This property is used to configure an [AppBar].
   final Widget? leading;
+  final List<String> bottomTextString;
 
   /// {@macro flutter.material.appbar.automaticallyImplyLeading}
   ///
@@ -1439,7 +1472,7 @@ class SliverAppBar extends StatefulWidget {
   ///
   /// This property is used to configure an [AppBar].
   final PreferredSizeWidget? bottom;
-  final List<String>? bottomTextString;
+
 
   /// {@macro flutter.material.appbar.elevation}
   ///

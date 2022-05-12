@@ -31,9 +31,10 @@ class MyRouter {
         //       photoUrl: params['photoUrl'], width: params['width']);
         // case personDetailPage:
         //   return PersonDetailPage(params['personImgUrl'], params['id']);
+        default:
+          return const ContainerPage();
       }
     }
-    return const ContainerPage();
   }
 
   MyRouter.pushNoParams(BuildContext context, String url) {
